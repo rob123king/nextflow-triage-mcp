@@ -1,0 +1,50 @@
+[project]
+name = "nextflow-triage-mcp"
+version = "0.1.0"
+description = "MCP server for triaging Nextflow pipeline runs"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = "Apache-2.0"
+keywords = ["mcp", "nextflow", "bioinformatics", "pipelines"]
+# Deliberately tiny. Everything else is the standard library: a Nextflow trace
+# file is a TSV and the work directory is plain text, so nothing here needs a
+# parser library, a binary, or a data download.
+dependencies = [
+    "mcp>=2.1,<3",
+    "pydantic>=2.9,<3",
+]
+
+[project.scripts]
+nextflow-triage-mcp = "nextflow_triage.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nextflow_triage"]
+
+[dependency-groups]
+dev = [
+    "anyio>=4.6",
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ANN", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+warn_unreachable = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
