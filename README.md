@@ -85,8 +85,15 @@ For Claude Desktop, in `claude_desktop_config.json`:
 No environment variables. Every input is a tool argument, which is deliberate —
 there is no configuration to get wrong and no hidden state behind a result.
 
-Transport is stdio, so **stdout is the protocol channel**. Logging goes to
-stderr; a stray `print()` would corrupt the stream and disconnect the host.
+Transport is stdio, so **stdout is the protocol channel**. Logging is
+configured to stderr in `__main__.py`.
+
+A stray `print()` in a tool does *not* corrupt the stream on SDK v2: the stdio
+transport claims file descriptor 1 for the protocol at startup and diverts
+`sys.stdout` to stderr for the life of the session (see `mcp/server/stdio.py`,
+and issue #1933). This was a real footgun on v1 and is now handled for you.
+Configure logging to stderr anyway — it is where logs belong, and it keeps the
+code correct if the transport ever changes.
 
 ### With MCP Inspector
 
@@ -95,6 +102,19 @@ npx -y @modelcontextprotocol/inspector uv run nextflow-triage-mcp
 ```
 
 Needs Node 20+. Point the tools at the directory `make_fixture_run.py` prints.
+
+---
+
+## Learning from it
+
+`TUTORIAL.md` is a nine-exercise walkthrough: change the code, predict what
+happens, check the answer. Every answer in it was run before being written down
+— including one that turned out to be wrong on the first attempt, which is left
+in as a note.
+
+```sh
+uv run python scripts/make_fixture_run.py   # then open TUTORIAL.md
+```
 
 ---
 
