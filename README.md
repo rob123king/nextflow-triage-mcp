@@ -1,3 +1,6 @@
+Intention: Initially a Claude code creation but then I will improve upon the offering with real testing and code changes. Other MCP nextflow servers exist but this is not intended to replace those but act as a use-case for MCP creation learning.
+
+
 # nextflow-triage-mcp
 
 An MCP server that lets an agent answer three questions about a Nextflow run:
